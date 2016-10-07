@@ -25,19 +25,10 @@
  * @license        LGPL
  */
 
-
-// simple trick for Contao < 2.10
-$arrPost = $_POST;
-unset($_POST);
-
-
-// inizialize the contao framework
+// Initialize the Contao framework
 define('TL_MODE', 'FE');
+/** @noinspection PhpIncludeInspection */
 require('system/initialize.php');
-
-
-// write the post data back into the array
-$_POST = $arrPost;
 
 
 /**
