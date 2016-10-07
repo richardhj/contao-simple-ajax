@@ -52,7 +52,7 @@ class SimpleAjaxFrontend extends \Frontend
             // Execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjax'] as $callback) {
                 if (is_array($callback)) {
-                    System::importStatic($callback[0])->{$callback[1]};
+                    System::importStatic($callback[0])->{$callback[1]}();
                 } elseif (is_callable($callback)) {
                     $callback();
                 }
@@ -66,7 +66,7 @@ class SimpleAjaxFrontend extends \Frontend
             // Execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'] as $callback) {
                 if (is_array($callback)) {
-                    System::importStatic($callback[0])->{$callback[1]};
+                    System::importStatic($callback[0])->{$callback[1]}();
                 } elseif (is_callable($callback)) {
                     $callback();
                 }
