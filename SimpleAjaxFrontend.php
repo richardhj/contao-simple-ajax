@@ -1,29 +1,14 @@
 <?php
-
 /**
- * Contao Open Source CMS
- * Copyright (C) 2005-2011 Leo Feyer
+ * SimpleAjax extension for Contao Open Source CMS
  *
- * This program is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
+ * Copyright (c) 2012 Leo Unglaub, 2016 Richard Henkenjohann
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program. If not, please visit the Free
- * Software Foundation website at <http://www.gnu.org/licenses/>.
- *
- * PHP version 5
- * @copyright      Leo Unglaub 2012
- * @author         Leo Unglaub <leo@leo-unglaub.net>
- * @package        simple_ajax
- * @license        LGPL
+ * @package SimpleAjax
+ * @author  Leo Unglaub <leo@leo-unglaub.net>
+ * @author  Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
+
 
 // Initialize the Contao framework
 define('TL_MODE', 'FE');
