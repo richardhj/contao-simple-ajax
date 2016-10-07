@@ -57,8 +57,11 @@ class SimpleAjax extends Controller
         if (is_array($GLOBALS['TL_HOOKS']['simpleAjax']) && count($GLOBALS['TL_HOOKS']['simpleAjax']) > 0) {
             // execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjax'] as $callback) {
-                $this->import($callback[0]);
-                $this->$callback[0]->$callback[1]();
+                if (is_array($callback)) {
+                    System::importStatic($callback[0])->{$callback[1]};
+                } elseif (is_callable($callback)) {
+                    $callback();
+                }
             }
         }
 

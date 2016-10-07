@@ -32,7 +32,7 @@ class SimpleAjaxFrontend extends Frontend
      */
     public function __construct()
     {
-        $this->import('FrontendUser');
+        FrontendUser::getInstance();
 
         // call the constructor from Frontend
         parent::__construct();
@@ -59,8 +59,11 @@ class SimpleAjaxFrontend extends Frontend
         if (is_array($GLOBALS['TL_HOOKS']['simpleAjax']) && count($GLOBALS['TL_HOOKS']['simpleAjax']) > 0) {
             // execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjax'] as $callback) {
-                $this->import($callback[0]);
-                $this->{$callback[0]}->{$callback[1]}();
+                if (is_array($callback)) {
+                    System::importStatic($callback[0])->{$callback[1]};
+                } elseif (is_callable($callback)) {
+                    $callback();
+                }
             }
         }
 
@@ -71,8 +74,11 @@ class SimpleAjaxFrontend extends Frontend
         ) {
             // execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'] as $callback) {
-                $this->import($callback[0]);
-                $this->{$callback[0]}->{$callback[1]}();
+                if (is_array($callback)) {
+                    System::importStatic($callback[0])->{$callback[1]};
+                } elseif (is_callable($callback)) {
+                    $callback();
+                }
             }
         }
 
