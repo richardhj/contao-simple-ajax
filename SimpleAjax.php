@@ -128,5 +128,3 @@ class SimpleAjax extends Controller
 // create a SimpleAjax instance and run it
 $objSimpleAjax = new SimpleAjax();
 $objSimpleAjax->run();
-
-?>
