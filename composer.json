@@ -1,0 +1,37 @@
+{
+  "name": "leounglaub/contao-simple-ajax",
+  "description": "More control over your AJAX requests.",
+  "keywords": [
+    "contao",
+    "ajax",
+    "http",
+    "network"
+  ],
+  "type": "contao-module",
+  "homepage": "http://www.leo-unglaub.net",
+  "license": "LGPL-3.0+",
+  "authors": [
+    {
+      "name": "Leo Unglaub",
+      "email": "leo@leo-unglaub.net",
+      "homepage": "http://www.leo-unglaub.net",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.3",
+    "contao/core": ">=3.2",
+    "contao-community-alliance/composer-installer": "*"
+  },
+  "replace": {
+    "contao-legacy/simple_ajax": "*"
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "SimpleAjax.php": "SimpleAjax.php",
+        "SimpleAjaxFrontend.php": "SimpleAjaxFrontend.php"
+      }
+    }
+  }
+}
