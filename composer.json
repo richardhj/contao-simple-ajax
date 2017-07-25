@@ -41,6 +41,7 @@
   "extra": {
     "contao": {
       "sources": {
+        "contao": "system/modules/SimpleAjax",
         "SimpleAjax.php": "SimpleAjax.php",
         "SimpleAjaxFrontend.php": "SimpleAjaxFrontend.php"
       }
