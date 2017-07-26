@@ -2,7 +2,7 @@
 /**
  * SimpleAjax extension for Contao Open Source CMS
  *
- * Copyright (c) 2012 Leo Unglaub, 2016 Richard Henkenjohann
+ * Copyright (c) 2012 Leo Unglaub, 2016-2017 Richard Henkenjohann
  *
  * @package SimpleAjax
  * @author  Leo Unglaub <leo@leo-unglaub.net>
@@ -14,10 +14,12 @@ namespace SimpleAjax;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use SimpleAjax\Event\SimpleAjax as SimpleAjaxEvent;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
  * Class SimpleAjax
+ *
  * @package SimpleAjax
  */
 class SimpleAjax extends \Frontend
@@ -29,7 +31,6 @@ class SimpleAjax extends \Frontend
      * @var bool
      */
     protected $includeFrontendExclusive = false;
-
 
     /**
      * @param bool $includeFrontendExclusive
@@ -43,7 +44,6 @@ class SimpleAjax extends \Frontend
         return $this;
     }
 
-
     /**
      * @return bool
      */
@@ -51,7 +51,6 @@ class SimpleAjax extends \Frontend
     {
         return $this->includeFrontendExclusive;
     }
-
 
     /**
      * Initialize the object
@@ -82,31 +81,41 @@ class SimpleAjax extends \Frontend
         \Controller::setStaticUrls();
     }
 
-
     /**
      * Handle the request
      */
     public function handle()
     {
         global $container;
+
         /** @var EventDispatcher $dispatcher */
         $dispatcher = $container['event-dispatcher'];
 
         // Trigger event
+        // @since 1.1
         $event = new SimpleAjaxEvent($this->isIncludeFrontendExclusive());
         $dispatcher->dispatch(SimpleAjaxEvent::NAME, $event);
+
+        // If the event listener does not terminate the process by itself, check for a response instance to send
+        // @since 1.2
+        $response = $event->getResponse();
+        if (null !== $response) {
+            $response->send();
+        }
 
         // Run hooks
         $this->runHooks();
 
         // If there is no other output, we generate a 412 error response
-        header('HTTP/1.1 412 Precondition Failed');
-        die('Simple Ajax: Invalid AJAX call.');
+        $errorResponse = new Response(
+            'Simple Ajax: Invalid AJAX call.',
+            Response::HTTP_PRECONDITION_FAILED
+        );
+        $errorResponse->send();
     }
 
-
     /**
-     * Run hooks (to be removed)
+     * Run hooks (legacy)
      */
     private function runHooks()
     {
