@@ -97,7 +97,7 @@ class SimpleAjax extends \Frontend
         $event = new SimpleAjaxEvent($this->isIncludeFrontendExclusive());
         $dispatcher->dispatch(SimpleAjaxEvent::NAME, $event);
 
-        // If the event listener does not terminate the process by itself, check for a `Response to send (@since 1.2)
+        // If the event listener does not terminate the process by itself, check for a `Response` to send (@since 1.2)
         $response = $event->getResponse();
         if (null === $response) {
             // Run hooks for backwards compatibility
@@ -119,6 +119,8 @@ class SimpleAjax extends \Frontend
         // Run the global hooks
         if (is_array($GLOBALS['TL_HOOKS']['simpleAjax'])
             && count($GLOBALS['TL_HOOKS']['simpleAjax']) > 0) {
+            $this->triggerHooksDeprecatedNotice();
+
             // Execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjax'] as $callback) {
                 if (is_array($callback)) {
@@ -127,14 +129,14 @@ class SimpleAjax extends \Frontend
                     $callback();
                 }
             }
-
-            $this->triggerHooksDeprecatedNotice();
         }
 
         if ($this->isIncludeFrontendExclusive()) {
             // Run the frontend exclusive hooks
             if (is_array($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'])
                 && count($GLOBALS['TL_HOOKS']['simpleAjaxFrontend']) > 0) {
+                $this->triggerHooksDeprecatedNotice();
+
                 // Execute every registered callback
                 foreach ($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'] as $callback) {
                     if (is_array($callback)) {
@@ -143,8 +145,6 @@ class SimpleAjax extends \Frontend
                         $callback();
                     }
                 }
-
-                $this->triggerHooksDeprecatedNotice();
             }
         }
     }
