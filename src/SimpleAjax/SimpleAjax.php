@@ -114,7 +114,8 @@ class SimpleAjax extends \Frontend
     private function runHooks()
     {
         // Run the global hooks
-        if (is_array($GLOBALS['TL_HOOKS']['simpleAjax']) && count($GLOBALS['TL_HOOKS']['simpleAjax']) > 0) {
+        if (is_array($GLOBALS['TL_HOOKS']['simpleAjax'])
+            && count($GLOBALS['TL_HOOKS']['simpleAjax']) > 0) {
             // Execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjax'] as $callback) {
                 if (is_array($callback)) {
@@ -123,13 +124,14 @@ class SimpleAjax extends \Frontend
                     $callback();
                 }
             }
+
+            $this->triggerHooksDeprecatedNotice();
         }
 
         if ($this->isIncludeFrontendExclusive()) {
             // Run the frontend exclusive hooks
             if (is_array($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'])
-                && count($GLOBALS['TL_HOOKS']['simpleAjaxFrontend']) > 0
-            ) {
+                && count($GLOBALS['TL_HOOKS']['simpleAjaxFrontend']) > 0) {
                 // Execute every registered callback
                 foreach ($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'] as $callback) {
                     if (is_array($callback)) {
@@ -138,7 +140,26 @@ class SimpleAjax extends \Frontend
                         $callback();
                     }
                 }
+
+                $this->triggerHooksDeprecatedNotice();
             }
         }
+    }
+
+    /**
+     * The Simple Ajax hooks are deprecated.
+     *
+     * If you encounter this deprecation notice, you might want to
+     * 1. Remove the hook registration in the config.php and register your method in the event_listeners.php (or
+     * applicable)
+     * 2. Rewrite your code to set an `Symfony\Component\HttpFoundation\Response`. You do not have to terminate your
+     * code with `exit()` anymore. This is the recommended way.
+     */
+    private function triggerHooksDeprecatedNotice()
+    {
+        @trigger_error(
+            'The Simple Ajax hooks are deprecated, use the event to listen for.',
+            E_USER_DEPRECATED
+        );
     }
 }
