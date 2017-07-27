@@ -69,8 +69,11 @@ class SimpleAjax extends \Frontend
         if (!$_SESSION['DISABLE_CACHE']) {
             // Maintenance mode (see #4561 and #6353)
             if (\Config::get('maintenanceMode')) {
-                header('HTTP/1.1 503 Service Unavailable');
-                die_nicely('be_unavailable', 'This site is currently down for maintenance. Please come back later.');
+                $response = new Response(
+                    'This site is currently down for maintenance. Please come back later.',
+                    Response::HTTP_SERVICE_UNAVAILABLE
+                );
+                $response->send();
             }
 
             // Disable the debug mode
