@@ -11,7 +11,7 @@ upgrade process to Contao 4.
 You simply have to register your class/method and the extension will call your class if there is an incoming ajax
 request. You simply have to decide if it's an ajax request for your module and return the data you want.
 
-There are a few thinks you should know about the extension:
+There are a few things you should know about the extension:
 * YOU have the full control over the response. That also means that you have to set the correct header.
 * When not setting a `Response`, YOU have to terminate the request after you have send the response. If the ajax request
 is not for your method you simply have to return nothing.
