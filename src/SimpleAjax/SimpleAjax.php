@@ -91,27 +91,21 @@ class SimpleAjax extends \Frontend
         /** @var EventDispatcher $dispatcher */
         $dispatcher = $container['event-dispatcher'];
 
-        // Trigger event
-        // @since 1.1
         $event = new SimpleAjaxEvent($this->isIncludeFrontendExclusive());
         $dispatcher->dispatch(SimpleAjaxEvent::NAME, $event);
 
-        // If the event listener does not terminate the process by itself, check for a response instance to send
-        // @since 1.2
+        // If the event listener does not terminate the process by itself, check for a `Response to send (@since 1.2)
         $response = $event->getResponse();
-        if (null !== $response) {
-            $response->send();
+        if (null === $response) {
+            // Run hooks for backwards compatibility
+            $this->runHooks();
+            // Hooks should have been exiting now - if we end up, prepare an error response.
+            $response = new Response(
+                'Simple Ajax: Invalid AJAX call.',
+                Response::HTTP_PRECONDITION_FAILED
+            );
         }
-
-        // Run hooks
-        $this->runHooks();
-
-        // If there is no other output, we generate a 412 error response
-        $errorResponse = new Response(
-            'Simple Ajax: Invalid AJAX call.',
-            Response::HTTP_PRECONDITION_FAILED
-        );
-        $errorResponse->send();
+        $response->send();
     }
 
     /**
