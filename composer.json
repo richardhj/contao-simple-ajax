@@ -29,6 +29,9 @@
     "contao-community-alliance/composer-plugin": "~2.4",
     "contao-community-alliance/event-dispatcher": "~1.3"
   },
+  "require-dev": {
+    "phpcq/all-tasks": "~1.0"
+  },
   "replace": {
     "contao-legacy/simple_ajax": "*",
     "leounglaub/contao-simple-ajax": "*"
@@ -36,6 +39,11 @@
   "autoload": {
     "psr-0": {
       "SimpleAjax\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "SimpleAjax\\Test\\": "tests"
     }
   },
   "extra": {

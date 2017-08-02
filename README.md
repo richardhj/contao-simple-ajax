@@ -2,20 +2,47 @@
 
 ## Description
 
-v1.1.0 introduces the `SimpleAjax\Event\SimpleAjax`. You will be able to register an event listener. If you're not using composer, you might want to use v1.0 instead and use the legacy hooks.
+v1.1.0 introduces the `SimpleAjax\Event\SimpleAjax`. You will be able to register an event listener. If you're not using
+composer, you might want to use v1.0 instead and use the legacy hooks.
 
-You simply have to register your class/method and the extension will call your class if there is an incoming ajax request. You simply have to decide if it's an ajax request for your module and return the data you want.
+v1.2.0 lets you set an `Response` instance (from the symfony/http package). This was introduced to prepare a smooth
+upgrade process to Contao 4.
 
-There are a few thinks you should know about the extension:
+You simply have to register your class/method and the extension will call your class if there is an incoming ajax
+request. You simply have to decide if it's an ajax request for your module and return the data you want.
+
+There are a few things you should know about the extension:
 * YOU have the full control over the response. That also means that you have to set the correct header.
-* YOU have to terminate the request after you have send the response. If the ajax request is not for your method you simply have to return nothing.
+* When not setting a `Response`, YOU have to terminate the request after you have send the response. If the ajax request
+is not for your method you simply have to return nothing.
 
 ## Usage
 
 ### Per Event
 
-1. Listen on the event `SimpleAjax\Event\SimpleAjax` using one [method described here](https://github.com/contao-community-alliance/event-dispatcher#event-listener-per-configuration). 
+At first: Listen on the event `SimpleAjax\Event\SimpleAjax` using one [method described here](https://github.com/contao-community-alliance/event-dispatcher#event-listener-per-configuration). 
 
+#### Either: Set a `Response`
+
+```php
+class MyAjaxListener
+{
+   public function myMethod(\SimpleAjax\Event\SimpleAjax $event)
+   {
+       if ('myrequest' !== \Input::get('acid'))
+       {
+           return;
+       }
+       
+       $return = ['foo', 'bar', 'foobar'];
+       $response = new \Symfony\Component\HttpFoundation\JsonResponse($return);
+       $event->setResponse($response);
+   }
+}
+```
+
+
+#### Or: Handwritten response with termination
 ```php
 class MyAjaxListener
 {
