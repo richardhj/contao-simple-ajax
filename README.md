@@ -73,7 +73,7 @@ class MyAjaxListener
 ```php
 // config.php
 $GLOBALS['TL_HOOKS']['simpleAjax'][] = array('MyClass', 'myMethod');
-$GLOBALS['TL_HOOKS']['simpleAjaxFronted'][] = array('MyClass', 'myMethod'); // Use this hook for front end exclusive hooks
+$GLOBALS['TL_HOOKS']['simpleAjaxFrontend'][] = array('MyClass', 'myMethod'); // Use this hook for front end exclusive hooks
 
 // MyClass.php
 class MyClass
