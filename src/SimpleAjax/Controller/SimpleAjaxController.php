@@ -2,46 +2,40 @@
 /**
  * SimpleAjax extension for Contao Open Source CMS
  *
- * Copyright (c) 2012 Leo Unglaub, 2016-2017 Richard Henkenjohann
+ * Copyright (c) 2016-2018 Richard Henkenjohann
  *
  * @package SimpleAjax
- * @author  Leo Unglaub <leo@leo-unglaub.net>
  * @author  Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  */
 
-namespace SimpleAjax;
+namespace SimpleAjax\Controller;
 
-
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Contao\System;
 use SimpleAjax\Event\SimpleAjax as SimpleAjaxEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-
-/**
- * Class SimpleAjax
- *
- * @package SimpleAjax
- */
-class SimpleAjax extends \Frontend
+class SimpleAjaxController
 {
 
     /**
-     * Indicates whether the "SimpleAjaxFrontend.php" was called
-     *
-     * @var bool
+     * @var EventDispatcherInterface
      */
-    protected $includeFrontendExclusive = false;
+    private $dispatcher;
 
     /**
-     * @param bool $includeFrontendExclusive
-     *
-     * @return SimpleAjax
+     * @var bool
      */
-    public function setIncludeFrontendExclusive($includeFrontendExclusive)
-    {
-        $this->includeFrontendExclusive = $includeFrontendExclusive;
+    private $includeFrontendExclusive;
 
-        return $this;
+    /**
+     * SimpleAjax constructor.
+     *
+     * @param EventDispatcherInterface $dispatcher The event dispatcher.
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -53,49 +47,18 @@ class SimpleAjax extends \Frontend
     }
 
     /**
-     * Initialize the object
+     * Handle a simple-ajax request.
+     *
+     * @param bool $_frontend Run frontend-exclusive hooks.
+     *
+     * @return Response
      */
-    public function __construct()
+    public function __invoke($_frontend)
     {
-        // Load the user object before calling the parent constructor
-        \FrontendUser::getInstance();
-        parent::__construct();
-
-        // Check whether a user is logged in
-        define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
-        define('FE_USER_LOGGED_IN', $this->getLoginStatus('FE_USER_AUTH'));
-
-        // No back end user logged in
-        if (!$_SESSION['DISABLE_CACHE']) {
-            // Maintenance mode (see #4561 and #6353)
-            if (\Config::get('maintenanceMode')) {
-                $response = new Response(
-                    'This site is currently down for maintenance. Please come back later.',
-                    Response::HTTP_SERVICE_UNAVAILABLE
-                );
-                $response->send();
-            }
-
-            // Disable the debug mode
-            \Config::set('debugMode', false);
-        }
-
-        // Set static url's in case the user generated HTML code
-        \Controller::setStaticUrls();
-    }
-
-    /**
-     * Handle the request
-     */
-    public function handle()
-    {
-        global $container;
-
-        /** @var EventDispatcher $dispatcher */
-        $dispatcher = $container['event-dispatcher'];
+        $this->includeFrontendExclusive = $_frontend === 'frontend';
 
         $event = new SimpleAjaxEvent($this->isIncludeFrontendExclusive());
-        $dispatcher->dispatch(SimpleAjaxEvent::NAME, $event);
+        $this->dispatcher->dispatch(SimpleAjaxEvent::NAME, $event);
 
         // If the event listener does not terminate the process by itself, check for a `Response` to send (@since 1.2)
         $response = $event->getResponse();
@@ -108,11 +71,14 @@ class SimpleAjax extends \Frontend
                 Response::HTTP_PRECONDITION_FAILED
             );
         }
-        $response->send();
+
+        return $response;
     }
 
     /**
      * Run hooks (legacy)
+     *
+     * @return void
      */
     private function runHooks()
     {
@@ -124,7 +90,7 @@ class SimpleAjax extends \Frontend
             // Execute every registered callback
             foreach ($GLOBALS['TL_HOOKS']['simpleAjax'] as $callback) {
                 if (is_array($callback)) {
-                    \System::importStatic($callback[0])->{$callback[1]}();
+                    System::importStatic($callback[0])->{$callback[1]}();
                 } elseif (is_callable($callback)) {
                     $callback();
                 }
@@ -140,7 +106,7 @@ class SimpleAjax extends \Frontend
                 // Execute every registered callback
                 foreach ($GLOBALS['TL_HOOKS']['simpleAjaxFrontend'] as $callback) {
                     if (is_array($callback)) {
-                        \System::importStatic($callback[0])->{$callback[1]}();
+                        System::importStatic($callback[0])->{$callback[1]}();
                     } elseif (is_callable($callback)) {
                         $callback();
                     }
@@ -157,6 +123,8 @@ class SimpleAjax extends \Frontend
      * applicable)
      * 2. Rewrite your code to set an `Symfony\Component\HttpFoundation\Response`. You do not have to terminate your
      * code with `exit()` anymore. This is the recommended way.
+     *
+     * @return void
      */
     private function triggerHooksDeprecatedNotice()
     {

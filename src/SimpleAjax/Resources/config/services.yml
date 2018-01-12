@@ -1,0 +1,9 @@
+services:
+    richardhj.simple_ajax.controller:
+        class: SimpljeAjax\Controller\SimpleAjaxController
+        arguments:
+          - '@event_dispatcher'
+
+parameters:
+    simpleajax.entrypoint: "simple-ajax"
+    simpleajax.entrypoint-frontend: "simple-ajax/frontend"

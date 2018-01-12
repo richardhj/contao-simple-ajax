@@ -1,0 +1,5 @@
+richardhj.simple_ajax:
+    path: /simple-ajax/{_frontend}
+    defaults:
+        _controller: richardhj.simple_ajax.controller
+        _frontend: frontend
