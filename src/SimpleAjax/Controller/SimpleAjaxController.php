@@ -49,7 +49,7 @@ class SimpleAjaxController
     /**
      * Handle a simple-ajax request.
      *
-     * @param bool $_frontend Run frontend-exclusive hooks.
+     * @param string $_frontend Run frontend-exclusive hooks.
      *
      * @return Response
      */
