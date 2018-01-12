@@ -12,10 +12,12 @@ namespace SimpleAjax\Controller;
 
 use Contao\System;
 use SimpleAjax\Event\SimpleAjax as SimpleAjaxEvent;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SimpleAjaxController
+class SimpleAjaxController extends Controller
 {
 
     /**
@@ -49,13 +51,16 @@ class SimpleAjaxController
     /**
      * Handle a simple-ajax request.
      *
-     * @param string $_frontend Run frontend-exclusive hooks.
+     * @param Request $request The request.
      *
      * @return Response
      */
-    public function __invoke($_frontend)
+    public function __invoke(Request $request)
     {
-        $this->includeFrontendExclusive = $_frontend === 'frontend';
+        $this->includeFrontendExclusive = false !== strpos(
+                $request->getRequestUri(),
+                $this->getParameter('simpleajax.entrypoint-frontend')
+            );
 
         $event = new SimpleAjaxEvent($this->isIncludeFrontendExclusive());
         $this->dispatcher->dispatch(SimpleAjaxEvent::NAME, $event);
