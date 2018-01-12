@@ -82,6 +82,10 @@ class SimpleAjaxController
      */
     private function runHooks()
     {
+        if (!isset($GLOBALS['TL_HOOKS'])) {
+            return;
+        }
+
         // Run the global hooks
         if (is_array($GLOBALS['TL_HOOKS']['simpleAjax'])
             && count($GLOBALS['TL_HOOKS']['simpleAjax']) > 0) {
