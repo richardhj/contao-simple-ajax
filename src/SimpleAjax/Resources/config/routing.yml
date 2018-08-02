@@ -2,8 +2,10 @@ richardhj.simple_ajax.default:
     path: /SimpleAjax.php
     defaults:
         _controller: richardhj.simple_ajax.controller
+        _scope: backend
 
 richardhj.simple_ajax.frontend:
     path: /SimpleAjaxFrontend.php
     defaults:
         _controller: richardhj.simple_ajax.controller
+        _scope: frontend
