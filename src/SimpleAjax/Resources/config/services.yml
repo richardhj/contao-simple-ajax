@@ -5,6 +5,8 @@ services:
           - "@event_dispatcher"
         calls:
           - [setContainer, ["@service_container"]]
+        tags: ['controller.service_arguments']
+        public: true
 
 parameters:
     simpleajax.entrypoint: "SimpleAjax.php"
